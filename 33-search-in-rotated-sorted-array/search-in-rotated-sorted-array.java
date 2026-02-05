@@ -1,77 +1,53 @@
 class Solution {
-    // public int findPeak(int[] nums){
-    //     int start = 0;
-    //     int end = nums.length - 1;
-    //     while(start != end){
-    //         int mid = start + (end - start) / 2;
 
-            
-    //         if(nums[mid] > nums[mid + 1]){
-    //             end = mid;
-    //         }else{
-    //             start = mid + 1;
-    //         }
-    //     }
-    //     System.out.println(nums[start]);
-    //     return start;
-    // }
-    public int binarySearch(int[] nums, int target, int start, int end){
-        // int start = 0;
-        // int end = nums.length - 1;
-        while(start <= end){
-            int mid = start + (end - start) / 2;
+    public int binarySearch(int[] nums, int left, int right, int target){
+        while(left <= right){
+            int mid = left + (right - left) / 2;
 
             if(nums[mid] == target){
                 return mid;
-            }else if(target < nums[mid]){
-                end = mid - 1;
+            }else if(nums[mid] > target){
+                right = mid - 1;
             }else{
-                start = mid + 1;
+                left = mid + 1;
             }
         }
+
         return -1;
     }
-    public int findPivot(int[] nums){
-        int start = 0;
-        int end = nums.length - 1;
-        while(start <= end){
-            int mid = start + (end - start) / 2;
-            if(mid < end && nums[mid] > nums[mid + 1]){
+    public int pivotIndex(int[] nums, int target){
+        int left = 0;
+        int right = nums.length - 1;
+
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            if(mid < nums.length - 1 && nums[mid] > nums[mid + 1]){
                 return mid;
+            }else if(mid > 0 && nums[mid] < nums[mid - 1]){
+                return mid - 1;   
             }
-            if(mid > start && nums[mid] < nums[mid - 1]){
-                return mid - 1;
-            }
-            if (nums[mid] <= nums[start]){
-                end = mid - 1;
+            else if(nums[mid] >= nums[0]){
+                left = mid + 1;
             }else{
-                start = mid + 1;
+                right = mid - 1;
             }
         }
         return -1;
     }
     public int search(int[] nums, int target) {
-        int ans = -1;
-        int pivot = findPivot(nums);
-        System.out.println(pivot);
-        if(pivot == -1){
-            return binarySearch(nums, target, 0, nums.length - 1);
-        }else if(nums[pivot] == target){
-            return pivot;
-        }else if(target >= nums[0]){
-            return binarySearch(nums, target, 0, pivot - 1);
+        int len = nums.length;
+        int pivotIndex = pivotIndex(nums, target);
+        System.out.println(pivotIndex);
+        int last = pivotIndex == -1 ? len : pivotIndex;
+        int ans;
+        if(pivotIndex != -1 && target >= nums[0] && target <= nums[pivotIndex]){
+            ans = binarySearch(nums, 0, pivotIndex, target);
+        }else if(pivotIndex == -1){
+            ans = binarySearch(nums, 0, len - 1, target);
         }else{
-            return binarySearch(nums, target, pivot + 1, nums.length - 1);
+            ans = binarySearch(nums, pivotIndex + 1, len - 1, target);
         }
-        // int peak = findPeak(nums);
-        // if(target == nums[peak]){
-        //     return peak;
-        // }else if(binarySearch(nums, target, 0, peak) != -1){
-        //     System.out.println("hi");
-        //     return binarySearch(nums, target, 0, peak);
-        // }else{
-        //     return binarySearch(nums, target, peak + 1, nums.length - 1);
-        // }
-        
+
+        return ans;
     }
 }
