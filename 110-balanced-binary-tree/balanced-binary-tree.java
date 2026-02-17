@@ -20,16 +20,16 @@ class Solution {
         if(flag == false) return 0;
         int left = check(root.left);
         int right = check(root.right);
+        if(left == -1 || right == -1) return -1;
         if(Math.abs(left - right) > 1){
-            flag = false;
+            return -1;
         }
-
         return Math.max(left, right) + 1;
     }
 
     public boolean isBalanced(TreeNode root) {
         int x = check(root);
 
-        return flag;
+        return x == -1 ? false : true;
     }
 }
